@@ -1,8 +1,9 @@
 # Ayden Dazo 2022
+# ClayHack 2022
 
 import random
 
-
+# Decrypts based off a letter given
 def decryptWord(letter):
     match letter:
         case 1:
@@ -62,11 +63,13 @@ def decryptWord(letter):
     return new
 
 
+# Decryptes text with the One Time Pad idea
 def encryptOTP(word):
     numbers = []
     numberDictionary = {}
     alphabet = "abcdefghijklmnopqrstuvwxyz"
 
+    # Goes through the given text and translates the letters into numbers.
     for i in word.lower():
         if i in alphabet:
             numberOfWords = alphabet.split(i)
@@ -76,10 +79,12 @@ def encryptOTP(word):
 
     print(numbers)
 
+    # Creates variables in a dictionary for use in order to create randomness.
     for i in range(len(numbers)):
         numberDictionary["number{}".format(i)] = int((random.random()*49)+1)
         numbers[i] = str(int(numbers[i]) + numberDictionary["number{}".format(i)])
 
+    # Displays the codes needed for decryption.
     print("\nSAVE THIS FOR DECRYPTION PURPOSES!")
     for i in range(len(numberDictionary)):
         print("Letter {}:".format(i+1), numberDictionary["number{}".format(i)])
@@ -89,13 +94,16 @@ def encryptOTP(word):
         print(numbers[i], end=" ")
 
 
+# Decryptes text with the One Time Pad Idea
 def decryptOTP(code):
+    # Removes any 0's in front of numbers in order to prevent errors.
     numbers = code.split(",")
     for i in range(len(numbers)):
         if numbers[i].startswith("0"):
             numbers[i] = numbers[i].replace("0", "", 1)
     print(numbers)
 
+    # Asks the user for the number to decrypt using the codes from the OTP/
     oneTimeNumbers = input("Please input the numbers given for decryption purposes. Seperate only by commas, no spaces (Numbers only!). ")
     while (any(char.isalpha() for char in oneTimeNumbers or (" " in oneTimeNumbers) == True)):
             print("Your text contains letters/spaces.", end=" ")
@@ -108,6 +116,7 @@ def decryptOTP(code):
     if (oneTimeNumbers[0] == int(7527)):
         main()
 
+    # Verifies that the number of codes given and the amount of numbers is the same.
     numsInOldCode = 0
     numsInNewCode = 0
     for i in range(len(numbers)):
@@ -119,11 +128,13 @@ def decryptOTP(code):
         "\nIf you put in your original numbers wrong, please enter \"7527\" by itself.\n", sep="")
         decryptOTP(code)
 
+    # Decrypts the word and uses a function to decrypt it letter by letter.
     decryptedWord = []
     for i in range(len(numbers)):
         decryptedWord.append(int(numbers[i]) - int(oneTimeNumbers[i]))
     print(decryptedWord)
 
+    # Displays decrypted word.
     for i in range(len(decryptedWord)):
         decryptedWord[i] = decryptWord(decryptedWord[i])
     print("Decrypted word: ", end="")
@@ -131,7 +142,10 @@ def decryptOTP(code):
         print(decryptedWord[i], end="")
 
 
+# Encryptes text with the Caeser Cipher Idea
 def encryptCaeser(word):
+    # Asks the user how much they want to shift the text and which direction they want to shift it.
+    # Continues to ask user if an invalid value is given.
     shift = input("Please input the amount (between 0-26) you want to shift your text. ")
     while (any(char.isalpha() for char in shift) or int(shift) < 0 or int(shift) > 26):
         print("Contains letters/not in range. Please only input numbers that are in range. ", end="")
@@ -141,6 +155,7 @@ def encryptCaeser(word):
         print("Not valid. ", end="")
         rightorLeft = input("Please input whether you want to shift your text to the right or left. ")
     
+    # Goes through the given text and translates the letters into numbers.
     numbers = []
     alphabet = "abcdefghijklmnopqrstuvwxyz"
     for i in word.lower():
@@ -152,6 +167,7 @@ def encryptCaeser(word):
     print("Before encryption:", end="\n")
     print(numbers)
 
+    # Shows the user for future reference.
     print("\nYou're shifting your text by:", shift, "numbers.")
     print("You're shifting your text to the ", rightorLeft.lower(), ".", sep="")
 
@@ -170,6 +186,7 @@ def encryptCaeser(word):
     print(numbers)
 
 
+# Decrypts text with the Caeser Cipher Idea
 def decryptCaeser(code):
     numbers = code.split(",")
     for i in range(len(numbers)):
@@ -177,6 +194,7 @@ def decryptCaeser(code):
             numbers[i] = numbers[i].replace("0", "", 1)
     print(numbers)
 
+    # Asks user for shift and direction. There are options if they do not know.
     shift = input("Please enter the shift (between 1-26). If you do not know it, enter \"0\" (Numbers only!). ")
     while (any(char.isalpha() for char in shift) or int(shift) < 0 or int(shift) > 26):
         print("Contains letters/not in range. Please only input numbers that are in range. ", end="")
@@ -188,6 +206,7 @@ def decryptCaeser(code):
         rightOrLeft = input("Please enter whether the text is shifted left or right. Enter \"Unknown\" if you do not know. ")
     rightOrLeft.lower()
 
+    # If either shift or direction is unknown, tries to bruteforce.
     confirmed = "n"
     timesShifted = 0
     if (rightOrLeft == 'unknown' and shift == 0):
@@ -247,6 +266,7 @@ def decryptCaeser(code):
                 
             if questionMarks == len(decryptedWord):
                 rightOrLeft = 'left'
+                timesShifted = 0
 
             timesShifted += 1
             confirmed = input("\nDoes this look right? y/n ")
@@ -287,7 +307,7 @@ def decryptCaeser(code):
                 confirmed = input("Does this look right? y/n ")
         quit()
     
-
+    # Goes through the numbers one by one and tries to decrypt it.
     for i in range(len(numbers)):
         if (rightOrLeft == 'right'):
             if (int(numbers[i]) - int(shift) < 1):
@@ -312,13 +332,17 @@ def decryptCaeser(code):
         print(decryptedWord[i], end="")
 
 
+# Main function
 def main():
+    # Asks the user if they want to encrypt text or decrypt it.
+    # If an invalid option is given, it will continue to ask.
     encryptOrDecrypt = input("Would you like to encrypt or decrypt (You can also type e/d)? ")
     while (encryptOrDecrypt.lower() not in ('encrypt', 'decrypt', 'e', 'd')):
         print("Not a valid option. You can also put in e/d. ", end="")
         encryptOrDecrypt = input("Would you like to encrypt or decrypt?")
     encryptOrDecrypt = encryptOrDecrypt.lower()
 
+    # If the user chose that they want to encrypt, it will go through the process and send them to either the OTP function or Caeser Cipher function.
     if (encryptOrDecrypt == 'encrypt' or encryptOrDecrypt == 'e'):
         plaintext = input("Please enter the text that you want to encrypt (Letters Only!). ")
         while any(char.isdigit() for char in plaintext):
@@ -330,6 +354,8 @@ def main():
         print("\nCaeser Cipher")
         print("One Time Pad\n")
 
+        # Asks the user if they want to encrypt using the OTP or Caeser Cipher method. 
+        # Will continue to ask if not given a valid response.
         caeserOrOTP = input("Please type your encryption method using one of the above prompts, or type in 1 / 2. ")
         while (caeserOrOTP.lower() not in ('caeser cipher', 'one time pad', '1', '2')):
             print("Not a valid option.", end=" ")
@@ -350,6 +376,8 @@ def main():
         print("\nCaeser Cipher")
         print("One Time Pad\n")
 
+        # Asks the user if they want to decrypt using the OTP or Caeser Cipher method. 
+        # Will continue to ask if not given a valid response.
         caeserOrOTP = input("Please type your decryption method using one of the above prompts, or type in 1 / 2. ")
         while (caeserOrOTP.lower() not in ('caeser cipher', 'one time pad', '1', '2')):
             print("Not a valid option.", end=" ")
