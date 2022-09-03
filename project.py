@@ -3,6 +3,65 @@
 import random
 
 
+def decryptWord(letter):
+    match letter:
+        case 1:
+            new = "a"
+        case 2:
+            new = "b"
+        case 3:
+            new = "c"
+        case 4:
+            new = "d"
+        case 5:
+            new = "e"
+        case 6:
+            new = "f"
+        case 7:
+            new = "g"
+        case 8:
+            new = "h"
+        case 9:
+            new = "i"
+        case 10:
+            new = "j"
+        case 11:
+            new = "k"
+        case 12:
+            new = "l"
+        case 13:
+            new = "m"
+        case 14:
+            new = "n"
+        case 15:
+            new = "o"
+        case 16:
+            new = "p"
+        case 17:
+            new = "q"
+        case 18:
+            new = "r"
+        case 19:
+            new = "s"
+        case 20:
+            new = "t"
+        case 21:
+            new = "u"
+        case 22:
+            new = "v"
+        case 23:
+            new = "w"
+        case 24:
+            new = "x"
+        case 25:
+            new = "y"
+        case 26:
+            new = "z"
+        case default:
+            new = "?"
+    return new
+
+
 def encryptOTP(word):
     numbers = []
     numberDictionary = {}
@@ -18,7 +77,7 @@ def encryptOTP(word):
     print(numbers)
 
     for i in range(len(numbers)):
-        numberDictionary["number{}".format(i)] = int(random.random()*50)
+        numberDictionary["number{}".format(i)] = int((random.random()*49)+1)
         numbers[i] = str(int(numbers[i]) + numberDictionary["number{}".format(i)])
 
     print("\nSAVE THIS FOR DECRYPTION PURPOSES!")
@@ -66,62 +125,11 @@ def decryptOTP(code):
     print(decryptedWord)
 
     for i in range(len(decryptedWord)):
-        match decryptedWord[i]:
-            case 1:
-                decryptedWord[i] = "a"
-            case 2:
-                decryptedWord[i] = "b"
-            case 3:
-                decryptedWord[i] = "c"
-            case 4:
-                decryptedWord[i] = "d"
-            case 5:
-                decryptedWord[i] = "e"
-            case 6:
-                decryptedWord[i] = "f"
-            case 7:
-                decryptedWord[i] = "g"
-            case 8:
-                decryptedWord[i] = "h"
-            case 9:
-                decryptedWord[i] = "i"
-            case 10:
-                decryptedWord[i] = "j"
-            case 11:
-                decryptedWord[i] = "k"
-            case 12:
-                decryptedWord[i] = "l"
-            case 13:
-                decryptedWord[i] = "m"
-            case 14:
-                decryptedWord[i] = "n"
-            case 15:
-                decryptedWord[i] = "o"
-            case 16:
-                decryptedWord[i] = "p"
-            case 17:
-                decryptedWord[i] = "q"
-            case 18:
-                decryptedWord[i] = "r"
-            case 19:
-                decryptedWord[i] = "s"
-            case 20:
-                decryptedWord[i] = "t"
-            case 21:
-                decryptedWord[i] = "u"
-            case 22:
-                decryptedWord[i] = "v"
-            case 23:
-                decryptedWord[i] = "w"
-            case 24:
-                decryptedWord[i] = "x"
-            case 25:
-                decryptedWord[i] = "y"
-            case 26:
-                decryptedWord[i] = "z"
+        decryptedWord[i] = decryptWord(decryptedWord[i])
     print("Decrypted word: ", end="")
     for i in range(len(decryptedWord)):
         print(decryptedWord[i], end="")
+
 
 def encryptCaeser(word):
     shift = input("Please input the amount (between 0-26) you want to shift your text. ")
@@ -163,11 +171,148 @@ def encryptCaeser(word):
 
 
 def decryptCaeser(code):
-    pass
+    numbers = code.split(",")
+    for i in range(len(numbers)):
+        if numbers[i].startswith("0"):
+            numbers[i] = numbers[i].replace("0", "", 1)
+    print(numbers)
+
+    shift = input("Please enter the shift (between 1-26). If you do not know it, enter \"0\" (Numbers only!). ")
+    while (any(char.isalpha() for char in shift) or int(shift) < 0 or int(shift) > 26):
+        print("Contains letters/not in range. Please only input numbers that are in range. ", end="")
+        shift = input("Please enter the shift (between 1-26). If you do not know it, enter 0 (Numbers only!). ")
+    
+    rightOrLeft = input("Please enter whether the text is shifted left or right. Enter \"Unknown\" if you do not know. ")
+    while (rightOrLeft.lower() not in ('right', 'left', 'unknown')):
+        print("Not valid. ", end="")
+        rightOrLeft = input("Please enter whether the text is shifted left or right. Enter \"Unknown\" if you do not know. ")
+    rightOrLeft.lower()
+
+    confirmed = "n"
+    timesShifted = 0
+    if (rightOrLeft == 'unknown' and shift == 0):
+        while confirmed == "n":
+            for i in range(len(numbers)):
+                    if (int(numbers[i]) - int(timesShifted) > 26):
+                        numbers[i] = int(numbers[i]) - int(timesShifted) - 26
+                    else:
+                        numbers[i] = int(numbers[i]) - int(timesShifted)
+
+            decryptedWord = []
+            for i in range(len(numbers)):
+                decryptedWord.append(numbers[i]) 
+
+            for i in range(len(decryptedWord)):
+                decryptedWord[i] = decryptWord(decryptedWord[i])
+            print("Decrypted word: ", end="")
+            for i in range(len(decryptedWord)):
+                print(decryptedWord[i], end="")
+
+            timesShifted += 1
+            confirmed = input("\nDoes this look right? y/n ")
+            while (confirmed.lower() not in ('y','n')):
+                print("Not valid. ", end="")
+                confirmed = input("Does this look right? y/n ")
+        quit()
+    elif (rightOrLeft == 'unknown'):
+        rightOrLeft = 'right'
+        while confirmed == "n":
+            if rightOrLeft == 'right':
+                for i in range(len(numbers)):
+                    if (int(numbers[i]) - int(timesShifted) > 26):
+                        numbers[i] = int(numbers[i]) - int(timesShifted) - 26
+                    else:
+                        numbers[i] = int(numbers[i]) - int(timesShifted)
+            else:
+                for i in range(len(numbers)):
+                    if (int(numbers[i]) - int(timesShifted) < 1):
+                        numbers[i] = int(numbers[i]) - int(timesShifted) + 26
+                    else:
+                        numbers[i] = int(numbers[i]) - int(timesShifted)
+
+            decryptedWord = []
+            for i in range(len(numbers)):
+                decryptedWord.append(numbers[i]) 
+
+            for i in range(len(decryptedWord)):
+                decryptedWord[i] = decryptWord(decryptedWord[i])
+            print("Decrypted word: ", end="")
+            for i in range(len(decryptedWord)):
+                print(decryptedWord[i], end="")
+            
+            questionMarks = 0
+            for i in decryptedWord:
+                if i == "?":
+                    questionMarks += 1
+                
+            if questionMarks == len(decryptedWord):
+                rightOrLeft = 'left'
+
+            timesShifted += 1
+            confirmed = input("\nDoes this look right? y/n ")
+            while (confirmed.lower() not in ('y','n')):
+                print("Not valid. ", end="")
+                confirmed = input("Does this look right? y/n ")
+        quit()
+            
+    elif (shift == "0"):
+        while confirmed == "n":
+            if rightOrLeft == 'right':
+                for i in range(len(numbers)):
+                    if (int(numbers[i]) - int(timesShifted) > 26):
+                        numbers[i] = int(numbers[i]) - int(timesShifted) - 26
+                    else:
+                        numbers[i] = int(numbers[i]) - int(timesShifted)
+            else:
+                for i in range(len(numbers)):
+                    if (int(numbers[i]) - int(timesShifted) < 1):
+                        numbers[i] = int(numbers[i]) - int(timesShifted) + 26
+                    else:
+                        numbers[i] = int(numbers[i]) - int(timesShifted)
+
+            decryptedWord = []
+            for i in range(len(numbers)):
+                decryptedWord.append(numbers[i]) 
+
+            for i in range(len(decryptedWord)):
+                decryptedWord[i] = decryptWord(decryptedWord[i])
+            print("Decrypted word: ", end="")
+            for i in range(len(decryptedWord)):
+                print(decryptedWord[i], end="")
+
+            timesShifted += 1
+            confirmed = input("\nDoes this look right? y/n ")
+            while (confirmed.lower() not in ('y','n')):
+                print("Not valid. ", end="")
+                confirmed = input("Does this look right? y/n ")
+        quit()
+    
+
+    for i in range(len(numbers)):
+        if (rightOrLeft == 'right'):
+            if (int(numbers[i]) - int(shift) < 1):
+                numbers[i] = int(numbers[i]) - int(shift) + 26
+            else:
+                numbers[i] = int(numbers[i]) - int(shift)
+        else:
+            if (int(numbers[i]) + int(shift) > 26):
+                numbers[i] = (int(numbers[i]) + int(shift)) - 26
+            else:
+                numbers[i] = int(numbers[i]) + int(shift)
+    print(numbers)
+
+    decryptedWord = []
+    for i in range(len(numbers)):
+        decryptedWord.append(numbers[i]) 
+
+    for i in range(len(decryptedWord)):
+        decryptedWord[i] = decryptWord(decryptedWord[i])
+    print("Decrypted word: ", end="")
+    for i in range(len(decryptedWord)):
+        print(decryptedWord[i], end="")
+
 
 def main():
-    #fileOrPrompt = input("Would you like to encrypt a word from a file or from a prompt? ")
-
     encryptOrDecrypt = input("Would you like to encrypt or decrypt (You can also type e/d)? ")
     while (encryptOrDecrypt.lower() not in ('encrypt', 'decrypt', 'e', 'd')):
         print("Not a valid option. You can also put in e/d. ", end="")
